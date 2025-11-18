@@ -153,3 +153,7 @@ employeeForm.addEventListener("submit",(e)=>{
     experiencesContainer.appendChild(createExperienceGroup());
 })
 
+document.addEventListener('DOMContentLoaded', () => {
+    getEmployees();      
+    experiencesContainer.appendChild(createExperienceGroup());
+});
