@@ -5,6 +5,10 @@ const closeModalBtn = document.getElementById('close-modal-btn');
 const addExperienceBtn = document.getElementById("add-experience-btn")
 const experiencesContainer = document.getElementById("experiences-container")
 
+const nameInput = document.getElementById('name-input');
+const emailInput = document.getElementById('email-input');
+const phoneInput = document.getElementById('phone-input');
+
 // regex validaations
 const NAME_REGEX = /^[A-Za-z\s\-']+$/;
 const EMAIL_REGEX = /^[\w\.\-]+@[\w\.\-]+\.\w{2,4}$/;
@@ -50,3 +54,29 @@ addExperienceBtn.addEventListener('click',()=>{
     experiencesContainer.appendChild(createExperienceGroup());
 })
 
+// Validatioon
+
+function validationForm(){
+    let isValid = true ;
+
+    document.querySelectorAll(".error").forEach((er)=>{
+       er.classList.add('hidden')
+    })
+
+     if(!NAME_REGEX.test(nameInput.value)){
+       document.getElementById('name-error').classList.remove('hidden')
+            isValid=false;
+        }
+
+        if(!EMAIL_REGEX.test(emailInput.value)){
+       document.getElementById('email-error').classList.remove('hidden')
+            isValid=false;
+        }
+
+        if(!PHONE_REGEX.test(phoneInput.value)){
+       document.getElementById('phone-error').classList.remove('hidden')
+            isValid=false;
+        }
+
+        return isValid;
+}
