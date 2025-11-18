@@ -2,6 +2,9 @@ const addModal = document.getElementById("add-employee-modal")
 const addNewWorker = document.getElementById("open-modal-btn")
 const closeModalBtn = document.getElementById('close-modal-btn');
 
+const addExperienceBtn = document.getElementById("add-experience-btn")
+const experiencesContainer = document.getElementById("experiences-container")
+
 
 addNewWorker.addEventListener('click',()=>{
         addModal.classList.remove("hidden")
@@ -9,4 +12,35 @@ addNewWorker.addEventListener('click',()=>{
 
 closeModalBtn.addEventListener("click",()=>{
     addModal.classList.add("hidden")
+})
+
+// dynamic Experiences
+
+function createExperienceGroup(){
+    const div = document.createElement('div');
+
+    div.className="experience-group p-3 border rounded-lg bg-gray-50";
+    div.innerHTML=`
+              <div class="flex justify-end mb-2">
+            <button type="button" class="remove-experience-btn text-red-500 hover:text-red-700 text-lg" title="Remove Experience">
+                <i class="fas fa-minus-circle"></i>
+            </button>
+        </div>
+        <label for="experience" class="block text-sm font-medium text-gray-700">Title / Company</label>
+        <input id="experience" type="text" name="experience_title[]"  placeholder="ur experience heere ..." class="w-full border border-gray-300 rounded-md shadow-sm p-2">
+    
+    `
+        div.querySelector('.remove-experience-btn').addEventListener('click',()=>{
+           if(experiencesContainer.querySelectorAll('.experience-group').length>1){
+             div.remove();
+           }else{
+            alert("pleasse at least add one experience !!!")
+           }
+        })
+
+        return div;
+};
+
+addExperienceBtn.addEventListener('click',()=>{
+    experiencesContainer.appendChild(createExperienceGroup());
 })
