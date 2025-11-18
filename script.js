@@ -5,6 +5,11 @@ const closeModalBtn = document.getElementById('close-modal-btn');
 const addExperienceBtn = document.getElementById("add-experience-btn")
 const experiencesContainer = document.getElementById("experiences-container")
 
+// regex validaations
+const NAME_REGEX = /^[A-Za-z\s\-']+$/;
+const EMAIL_REGEX = /^[\w\.\-]+@[\w\.\-]+\.\w{2,4}$/;
+const PHONE_REGEX = /^[0-9\s\-+]{1,12}$/;
+
 
 addNewWorker.addEventListener('click',()=>{
         addModal.classList.remove("hidden")
@@ -44,3 +49,4 @@ function createExperienceGroup(){
 addExperienceBtn.addEventListener('click',()=>{
     experiencesContainer.appendChild(createExperienceGroup());
 })
+
