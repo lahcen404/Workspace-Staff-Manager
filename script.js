@@ -9,6 +9,8 @@ const nameInput = document.getElementById('name-input');
 const emailInput = document.getElementById('email-input');
 const phoneInput = document.getElementById('phone-input');
 
+const employeeForm = document.getElementById("employee-form");
+
 // regex validaations
 const NAME_REGEX = /^[A-Za-z\s\-']+$/;
 const EMAIL_REGEX = /^[\w\.\-]+@[\w\.\-]+\.\w{2,4}$/;
@@ -80,3 +82,15 @@ function validationForm(){
 
         return isValid;
 }
+
+
+// Empoyee Form Submit 
+
+employeeForm.addEventListener("submit",(e)=>{
+    e.preventDefault();
+
+    if(!validationForm()){
+        alert("Pleaaase correct validaaton inpuuts (Name or Email or Phone )")
+        return;
+    }
+})
