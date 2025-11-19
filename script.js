@@ -163,6 +163,8 @@ employeeForm.addEventListener("submit",(e)=>{
 // preview picture
 photoInput.addEventListener("input",(e)=>{
     const url = e.target.value;
+    console.log(url);
+    
     photoPreview.innerHTML= url ? `<img src="${url}"  class="w-full h-full object-cover">` : `<img src="./imgs/icons8-user-100.png"  class="w-full h-full object-cover">`;
 })
 
