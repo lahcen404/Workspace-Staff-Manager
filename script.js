@@ -8,6 +8,9 @@ const experiencesContainer = document.getElementById("experiences-container")
 const nameInput = document.getElementById('name-input');
 const emailInput = document.getElementById('email-input');
 const phoneInput = document.getElementById('phone-input');
+const photoInput = document.getElementById('photo-url-input');
+const photoPreview = document.getElementById('photo-preview')
+
 
 const employeeForm = document.getElementById("employee-form");
 
@@ -131,7 +134,7 @@ employeeForm.addEventListener("submit",(e)=>{
     const newEmployee= {
         name: data.get('name'),
         role: data.get('role'),
-        photoUrl:data.get('photoUrl'),
+        photoUrl:data.get('photoUrl') || './imgs/icons8-user-100.png',
         email:data.get('email'),
         phone:data.get('phone'),
         experience:data.getAll('experience_title[]').filter((t)=> {return t} ).map((title)=> {
@@ -152,6 +155,13 @@ employeeForm.addEventListener("submit",(e)=>{
     experiencesContainer.innerHTML='';
     experiencesContainer.appendChild(createExperienceGroup());
 })
+
+// preview picture
+photoInput.addEventListener("input",(e)=>{
+    const url = e.target.value;
+    photoPreview.innerHTML= url ? `<img src="${url}"  class="w-full h-full object-cover">` : `<img src="./imgs/icons8-user-100.png"  class="w-full h-full object-cover">`;
+})
+
 
 document.addEventListener('DOMContentLoaded', () => {
     getEmployees();      
