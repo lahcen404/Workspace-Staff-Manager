@@ -199,6 +199,38 @@
     </div>
 </div>
 
+<!-- profile card  -->
+ <div id="profile-modal" class="fixed inset-0 bg-gray-100/80 bg-opacity-75 z-50 flex justify-center items-center ">
+        <div class="bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg p-6 relative transform scale-95 md:scale-100">
+            <h3 class="text-2xl font-bold mb-4 text-teal-200">Employee Profile</h3>
+            <button id="close-profile-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div id="profile-details" class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <img id="profile-photo-large" src="" alt="employee photo" class="w-24 h-24 rounded-full object-cover border-4 border-teal-200 flex-shrink-0">
+                    <div>
+                        <p class="text-3xl font-bold text-white" id="profile-name">name</p>
+                        <p class="text-lg text-white font-semibold" id="profile-role">role</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <p class="text-white"><i class="fas fa-map-marker-alt mr-2 text-teal-500"></i> <strong class="font-semibold">Location:</strong> <span id="profile-location">location</span></p>
+                    <p class="text-white"><i class="fas fa-envelope mr-2 text-teal-500"></i> <strong class="font-semibold">Email:</strong> <span id="profile-email">email</span></p>
+                    <p class="text-white"><i class="fas fa-phone mr-2 text-teal-500"></i> <strong class="font-semibold">Phone:</strong> <span id="profile-phone">phone</span></p>
+                </div>
+                
+                <div class="pt-4 border-t border-gray-200">
+                    <h4 class="text-xl font-semibold mb-2 text-gray-200">Experiences</h4>
+                    <ul id="profile-experience-list" class="list-disc list-inside space-y-1 text-gray-600 pl-4">
+                        </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 <script src="./script.js"></script>
 </body>

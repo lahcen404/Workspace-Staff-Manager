@@ -178,6 +178,7 @@ unassignedEmpls.forEach((employe)=> unassignedStaffList.appendChild(createEmploy
 
 )}
 
+// create employe card
 function createEmployeeCard(employe){
     const card = document.createElement('div');
      card.className = 'employee-card p-3 mt-1 bg-white rounded-md shadow-sm border border-gray-200 cursor-pointer hover:bg-yellow-50 transition duration-100';
