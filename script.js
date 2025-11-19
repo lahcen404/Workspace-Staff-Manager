@@ -17,6 +17,38 @@ const EMAIL_REGEX = /^[\w\.\-]+@[\w\.\-]+\.\w{2,4}$/;
 const PHONE_REGEX = /^[0-9\s\-+]{1,12}$/;
 
 
+// Employess data
+
+let employees = [];
+let nextEmployeId = 1; 
+
+// localStorage
+function saveEmployees(){
+    try{
+        const data = JSON.stringify({employees,nextEmployeId})
+        localStorage.setItem("EmployeesData",data);
+    }catch(error){
+        console.error("error in save daaata",error)
+    }
+}
+
+function getEmployees(){
+    try {
+        const data = localStorage.getItem("EmployeesData");
+        if(data){
+            const parsingData = JSON.parse(data);
+            employees = parsingData.employees || [];
+            nextEmployeId = parsingData.nextEmployeId || 1;
+        }
+
+    } catch (error) {
+        console.error("error in getting data",data);
+        
+    }
+}
+
+
+
 addNewWorker.addEventListener('click',()=>{
         addModal.classList.remove("hidden")
 })
@@ -93,4 +125,35 @@ employeeForm.addEventListener("submit",(e)=>{
         alert("Pleaaase correct validaaton inpuuts (Name or Email or Phone )")
         return;
     }
+
+    const data = new FormData(employeeForm);
+
+    const newEmployee= {
+        name: data.get('name'),
+        role: data.get('role'),
+        photoUrl:data.get('photoUrl'),
+        email:data.get('email'),
+        phone:data.get('phone'),
+        experience:data.getAll('experience_title[]').filter((t)=> {return t} ).map((title)=> {
+            return { title: title};
+        })
+    }
+
+    employees.push({
+        id:nextEmployeId++,
+        ...newEmployee
+    })
+
+    saveEmployees();
+    console.log("employe added success");
+    
+    employeeForm.reset();
+    addModal.classList.add('hidden');
+    experiencesContainer.innerHTML='';
+    experiencesContainer.appendChild(createExperienceGroup());
 })
+
+document.addEventListener('DOMContentLoaded', () => {
+    getEmployees();      
+    experiencesContainer.appendChild(createExperienceGroup());
+});
