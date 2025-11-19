@@ -111,9 +111,9 @@
         <button id="open-modal-btn"
             class="w-full py-2 px-4 rounded-lg shadow-2xl text-sm font-medium bg-green-500 text-white hover:bg-green-600 transition  mb-6"
             data-mode="add">
-             Add New Workeer
+            Add New Workeer
         </button>
-         <div class="mt-4 sm:mb-[200px]">
+        <div class="mt-4 sm:mb-[200px]">
             <h3 class="text-lg font-semibold mb-3 text-gray-700">Unassigned Staff List</h3>
             <div id="unassigned-staff-list"
                 class=" p-2 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 h-56 lg:h-90 ">
@@ -122,6 +122,81 @@
             </div>
         </div>
     </aside>
+</div>
+
+<!-- add employee Modal -->
+
+<div id="add-employee-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75  flex justify-center items-center hidden">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 relative  ">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700 text-center" id="modal-title">Add New Worker</h3>
+        <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl">
+            <i class="fas fa-times"></i>
+        </button>
+        <form id="employee-form">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="name-input" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" name="name" id="name-input" required
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="error text-red-500 text-xs mt-1 hidden" id="name-error">Invalid Name !!</p>
+                </div>
+                <div>
+                    <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                    <select name="role" id="role" required
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                        <option value="">Select Role</option>
+                        <option value="receptionist">Receptionist</option>
+                        <option value="it-tech">IT Technician</option>
+                        <option value="manager">Manager</option>
+                        <option value="security">Security Officer</option>
+                        <option value="cleaning">Cleaning Staff</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="email-input" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" name="email" id="email-input" required
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="error text-red-500 text-xs mt-1 hidden" id="email-error">Invaliid Email !!</p>
+                </div>
+                <div>
+                    <label for="phone-input" class="block text-sm font-medium text-gray-700">Telephone</label>
+                    <input type="tel" name="phone" id="phone-input" required
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="error text-red-500 text-xs mt-1 hidden " id="phone-error">Invaliid Phone Number !!</p>
+                </div>
+            </div>
+
+            <div>
+                <label for="photo-url-input" class="block text-sm font-medium text-gray-700">Photo URL</label>
+                <div class="flex items-end space-x-4">
+                    <input type="url" name="photoUrl" id="photo-url-input" placeholder="Enter URL of Photo"
+                        class="flex-grow border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <div id="photo-preview"
+                        class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-xs text-gray-500 border-2 border-dashed border-gray-400 overflow-hidden flex-shrink-0">
+                        preeview
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-gray-200">
+                <h4 class="text-lg font-semibold mb-2">Professional Experiences</h4>
+                <div id="experiences-container" class="space-y-2">
+                </div>
+
+                <button type="button" class="mt-2 text-blue-500 hover:text-blue-700 text-sm font-medium"
+                    id="add-experience-btn">
+                    <i class="fas fa-plus-circle mr-1"></i> Add Experience
+                </button>
+            </div>
+
+            <button type="submit"
+                class="w-full py-3 mt-4 px-4 border-2 border-blue-950 border-dotted rounded-md shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 "
+                id="save-employee-btn">
+                Create Employee
+            </button>
+        </form>
+    </div>
 </div>
 
 
