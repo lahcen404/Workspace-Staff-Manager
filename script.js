@@ -3,6 +3,7 @@ const addNewWorker = document.getElementById("open-modal-btn")
 const closeModalBtn = document.getElementById('close-modal-btn');
 
 const profileModal = document.getElementById("profile-modal")
+const closeProfileModal = document.getElementById("close-profile-btn")
 
 const addExperienceBtn = document.getElementById("add-experience-btn")
 const experiencesContainer = document.getElementById("experiences-container")
@@ -191,6 +192,11 @@ function createEmployeeCard(employe){
                 <span class="text-sm text-gray-500">(${employe.role})</span>
             </div>
         `;
+
+          card.addEventListener("click", () => {
+        displayProfileCard(employe.id);
+    });
+    
         return card;
 }
 
@@ -212,11 +218,15 @@ function displayProfileCard(id){
 
 }
 
+closeProfileModal.addEventListener('click',()=>{
+    profileModal.classList.add('hidden');
+})
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
     getEmployees();     
     experiencesContainer.appendChild(createExperienceGroup());
     displayUnassignedStaff(); 
-    displayProfileCard(7)
+    displayProfileCard(1)
 });
