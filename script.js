@@ -2,6 +2,8 @@ const addModal = document.getElementById("add-employee-modal")
 const addNewWorker = document.getElementById("open-modal-btn")
 const closeModalBtn = document.getElementById('close-modal-btn');
 
+const profileModal = document.getElementById("profile-modal")
+
 const addExperienceBtn = document.getElementById("add-experience-btn")
 const experiencesContainer = document.getElementById("experiences-container")
 
@@ -192,9 +194,29 @@ function createEmployeeCard(employe){
         return card;
 }
 
+// display profile card 
+
+function displayProfileCard(id){
+    const employe = employees.find((e)=> e.id === id);
+    if (!employe) return;
+
+    document.getElementById("profile-photo-large").src=employe.photoUrl
+    document.getElementById("profile-name").textContent=employe.name
+    document.getElementById("profile-phone").textContent=employe.phone
+    document.getElementById("profile-role").textContent=employe.role
+    document.getElementById("profile-location").textContent=employe.location == 'Unasssigned'
+    document.getElementById("profile-email").textContent=employe.email
+    document.getElementById("profile-experience-list").innerHTML=employe.experience.map((ex) => { return `<li class="truncate">${ex.title}</li>`; }).join('')
+
+    profileModal.classList.remove("hidden");
+
+}
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     getEmployees();     
     experiencesContainer.appendChild(createExperienceGroup());
     displayUnassignedStaff(); 
+    displayProfileCard(7)
 });
