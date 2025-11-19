@@ -9,7 +9,7 @@
 
     <title>Workspace Staff Manager</title>
 </head>
-<div class="flex flex-col lg:flex-row min-h-screen">
+<div class="flex bg-gray-900 flex-col lg:flex-row min-h-screen">
 
     <main class="flex-grow p-2 sm:p-4 md:mt-[100px] ">
 
@@ -105,8 +105,8 @@
     </main>
 
 
-    <aside class="w-full lg:w-80 p-4 bg-white shadow-2xl  ">
-        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b md:text-center ">Add Workeers Area</h2>
+    <aside class="w-full lg:w-80 p-4 bg-gray-700 shadow-2xl  ">
+        <h2 class="text-xl font-bold text-white mb-4 border-b md:text-center ">Add Workeers Area</h2>
 
         <button id="open-modal-btn"
             class="w-full py-2 px-4 rounded-lg shadow-2xl text-sm font-medium bg-green-500 text-white hover:bg-green-600 transition  mb-6"
@@ -114,9 +114,9 @@
             Add New Workeer
         </button>
         <div class="mt-4 sm:mb-[200px]">
-            <h3 class="text-lg font-semibold mb-3 text-gray-700">Unassigned Staff List</h3>
+            <h3 class="text-lg font-semibold mb-3 text-white">Unassigned Staff List</h3>
             <div id="unassigned-staff-list"
-                class=" p-2 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 h-56 lg:h-90 ">
+                class=" p-2 border-2 border-dashed border-gray-300 rounded-lg bg-gray-800 h-56 lg:h-90 overflow-y-auto">
 
                 <p id="empty-staff-message" class="text-xs text-gray-400 pt-2 text-center">No unassigned staff heere</p>
             </div>
@@ -126,7 +126,7 @@
 
 <!-- add employee Modal -->
 
-<div id="add-employee-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75  flex justify-center items-center hidden">
+<div id="add-employee-modal" class="fixed inset-0 bg-gray-900/30 flex justify-center items-center hidden">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 relative  ">
         <h3 class="text-2xl font-bold mb-4 text-blue-700 text-center" id="modal-title">Add New Worker</h3>
         <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl">
@@ -191,13 +191,45 @@
             </div>
 
             <button type="submit"
-                class="w-full py-3 mt-4 px-4 border-2 border-blue-950 border-dotted rounded-md shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 "
+                class="w-full py-3 mt-4 px-4 border-2 border-white border-dotted rounded-md shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 "
                 id="save-employee-btn">
                 Create Employee
             </button>
         </form>
     </div>
 </div>
+
+<!-- profile card  -->
+ <div id="profile-modal" class="fixed inset-0 bg-gray-100/80 bg-opacity-75 z-50 flex justify-center items-center ">
+        <div class="bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg p-6 relative transform scale-95 md:scale-100">
+            <h3 class="text-2xl font-bold mb-4 text-teal-200">Employee Profile</h3>
+            <button id="close-profile-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div id="profile-details" class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <img id="profile-photo-large" src="" alt="employee photo" class="w-24 h-24 rounded-full object-cover border-4 border-teal-200 flex-shrink-0">
+                    <div>
+                        <p class="text-3xl font-bold text-white" id="profile-name">name</p>
+                        <p class="text-lg text-white font-semibold" id="profile-role">role</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <p class="text-white"><i class="fas fa-map-marker-alt mr-2 text-teal-500"></i> <strong class="font-semibold">Location:</strong> <span id="profile-location">location</span></p>
+                    <p class="text-white"><i class="fas fa-envelope mr-2 text-teal-500"></i> <strong class="font-semibold">Email:</strong> <span id="profile-email">email</span></p>
+                    <p class="text-white"><i class="fas fa-phone mr-2 text-teal-500"></i> <strong class="font-semibold">Phone:</strong> <span id="profile-phone">phone</span></p>
+                </div>
+                
+                <div class="pt-4 border-t border-gray-200">
+                    <h4 class="text-xl font-semibold mb-2 text-gray-200">Experiences</h4>
+                    <ul id="profile-experience-list" class="list-disc list-inside space-y-1 text-gray-100 pl-4">
+                        </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 <script src="./script.js"></script>

@@ -2,6 +2,8 @@ const addModal = document.getElementById("add-employee-modal")
 const addNewWorker = document.getElementById("open-modal-btn")
 const closeModalBtn = document.getElementById('close-modal-btn');
 
+const profileModal = document.getElementById("profile-modal")
+
 const addExperienceBtn = document.getElementById("add-experience-btn")
 const experiencesContainer = document.getElementById("experiences-container")
 
@@ -10,6 +12,8 @@ const emailInput = document.getElementById('email-input');
 const phoneInput = document.getElementById('phone-input');
 const photoInput = document.getElementById('photo-url-input');
 const photoPreview = document.getElementById('photo-preview')
+
+const unassignedStaffList = document.getElementById("unassigned-staff-list")
 
 
 const employeeForm = document.getElementById("employee-form");
@@ -144,8 +148,10 @@ employeeForm.addEventListener("submit",(e)=>{
 
     employees.push({
         id:nextEmployeId++,
-        ...newEmployee
+        ...newEmployee,
+        location: 'Unassigned'
     })
+    displayUnassignedStaff();
 
     saveEmployees();
     console.log("employe added success");
@@ -159,11 +165,58 @@ employeeForm.addEventListener("submit",(e)=>{
 // preview picture
 photoInput.addEventListener("input",(e)=>{
     const url = e.target.value;
+    console.log(url);
+    
     photoPreview.innerHTML= url ? `<img src="${url}"  class="w-full h-full object-cover">` : `<img src="./imgs/icons8-user-100.png"  class="w-full h-full object-cover">`;
 })
 
 
+//displaying unassigned Staff
+function displayUnassignedStaff(){
+
+    unassignedStaffList.innerHTML='';
+const unassignedEmpls = employees.filter((e)=> e.location === "Unassigned");
+unassignedEmpls.forEach((employe)=> unassignedStaffList.appendChild(createEmployeeCard(employe))
+
+)}
+
+// create employe card
+function createEmployeeCard(employe){
+    const card = document.createElement('div');
+     card.className = 'employee-card p-3 mt-1 bg-white rounded-md shadow-sm border border-gray-200 cursor-pointer hover:bg-yellow-50 transition duration-100';
+        card.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <img src="${employe.photoUrl}" alt="${employe.name}" class="w-8 h-8 rounded-full object-cover flex-shrink-0">
+                <span class="font-medium text-gray-800 truncate">${employe.name}</span>
+                <span class="text-sm text-gray-500">(${employe.role})</span>
+            </div>
+        `;
+        return card;
+}
+
+// display profile card 
+
+function displayProfileCard(id){
+    const employe = employees.find((e)=> e.id === id);
+    if (!employe) return;
+
+    document.getElementById("profile-photo-large").src=employe.photoUrl
+    document.getElementById("profile-name").textContent=employe.name
+    document.getElementById("profile-phone").textContent=employe.phone
+    document.getElementById("profile-role").textContent=employe.role
+    document.getElementById("profile-location").textContent=employe.location == 'Unasssigned'
+    document.getElementById("profile-email").textContent=employe.email
+    document.getElementById("profile-experience-list").innerHTML=employe.experience.map((ex) => { return `<li class="truncate">${ex.title}</li>`; }).join('')
+
+    profileModal.classList.remove("hidden");
+
+}
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
-    getEmployees();      
+    getEmployees();     
     experiencesContainer.appendChild(createExperienceGroup());
+    displayUnassignedStaff(); 
+    displayProfileCard(7)
 });
