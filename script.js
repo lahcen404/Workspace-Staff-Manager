@@ -196,7 +196,7 @@ function createEmployeeCard(employe){
           card.addEventListener("click", () => {
         displayProfileCard(employe.id);
     });
-    
+
         return card;
 }
 
@@ -228,5 +228,4 @@ document.addEventListener('DOMContentLoaded', () => {
     getEmployees();     
     experiencesContainer.appendChild(createExperienceGroup());
     displayUnassignedStaff(); 
-    displayProfileCard(1)
 });
