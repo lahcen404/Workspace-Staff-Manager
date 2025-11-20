@@ -237,6 +237,7 @@ document.getElementById("profile-experience-list").innerHTML =
 
 }
 
+
 closeProfileModal.addEventListener('click',()=>{
     profileModal.classList.add('hidden');
 })
