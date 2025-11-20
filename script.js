@@ -3,6 +3,7 @@ const addNewWorker = document.getElementById("open-modal-btn")
 const closeModalBtn = document.getElementById('close-modal-btn');
 
 const profileModal = document.getElementById("profile-modal")
+const closeProfileModal = document.getElementById("close-profile-btn")
 
 const addExperienceBtn = document.getElementById("add-experience-btn")
 const experiencesContainer = document.getElementById("experiences-container")
@@ -78,6 +79,10 @@ function createExperienceGroup(){
         </div>
         <label for="experience" class="block text-sm font-medium text-gray-700">Title / Company</label>
         <input id="experience" type="text" name="experience_title[]"  placeholder="ur experience heere ..." class="w-full border border-gray-300 rounded-md shadow-sm p-2">
+        <label for="experience-start-date" class="block text-sm font-medium text-gray-700">Start Date</label>
+        <input id="experience-start-date" type="date" name="experience_start-date[]" class="w-full border border-gray-300 rounded-md shadow-sm p-2">
+        <label for="experience-end-date" class="block text-sm font-medium text-gray-700">End Date</label>
+        <input id="experience-end-date" type="date" name="experience_end-date[]" class="w-full border border-gray-300 rounded-md shadow-sm p-2">
     
     `
         div.querySelector('.remove-experience-btn').addEventListener('click',()=>{
@@ -141,10 +146,13 @@ employeeForm.addEventListener("submit",(e)=>{
         photoUrl:data.get('photoUrl') || './imgs/icons8-user-100.png',
         email:data.get('email'),
         phone:data.get('phone'),
-        experience:data.getAll('experience_title[]').filter((t)=> {return t} ).map((title)=> {
-            return { title: title};
-        })
-    }
+        experienceTitles:data.getAll('experience_title[]'),
+        experienceStartDates:data.getAll('experience_start-date[]'),
+        experienceEndDates:data.getAll('experience_end-date[]')
+
+      
+        }
+    
 
     employees.push({
         id:nextEmployeId++,
@@ -191,6 +199,11 @@ function createEmployeeCard(employe){
                 <span class="text-sm text-gray-500">(${employe.role})</span>
             </div>
         `;
+
+          card.addEventListener("click", () => {
+        displayProfileCard(employe.id);
+    });
+
         return card;
 }
 
@@ -206,11 +219,28 @@ function displayProfileCard(id){
     document.getElementById("profile-role").textContent=employe.role
     document.getElementById("profile-location").textContent=employe.location == 'Unasssigned'
     document.getElementById("profile-email").textContent=employe.email
-    document.getElementById("profile-experience-list").innerHTML=employe.experience.map((ex) => { return `<li class="truncate">${ex.title}</li>`; }).join('')
+document.getElementById("profile-experience-list").innerHTML =
+    employe.experienceTitles
+        .map((title, i) => {
+            return `
+                <li class="truncate">
+                    <span class="font-semibold">${title}</span>
+                    <span class="text-xs text-gray-400">
+                        (${employe.experienceStartDates[i]} to ${employe.experienceEndDates[i]})
+                    </span>
+                </li>
+            `;
+        })
+        .join('');
 
     profileModal.classList.remove("hidden");
 
 }
+
+
+closeProfileModal.addEventListener('click',()=>{
+    profileModal.classList.add('hidden');
+})
 
 
 
@@ -218,5 +248,4 @@ document.addEventListener('DOMContentLoaded', () => {
     getEmployees();     
     experiencesContainer.appendChild(createExperienceGroup());
     displayUnassignedStaff(); 
-    displayProfileCard(7)
 });
