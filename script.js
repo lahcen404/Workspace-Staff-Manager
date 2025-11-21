@@ -18,10 +18,10 @@ const ZONE_CAPACITY = {
 };
 
 const ACCESS_RULES = {
-    'reception': ['receptionist'],
-    'server': ['it-tech'],
-    'security': ['security'],
-    'archive': ['receptionist', 'it-tech', 'security', 'manager', 'other'], 
+    'reception': ['receptionist', 'manager', 'cleaning'],
+    'server': ['it-tech', 'manager', 'cleaning'],
+    'security': ['security', 'manager', 'cleaning'],
+    'archive': ['manager', 'receptionist', 'it-tech', 'security', 'other'], 
     'conference': ['receptionist', 'it-tech', 'manager', 'security', 'cleaning', 'other'], 
     'staff-room': ['receptionist', 'it-tech', 'manager', 'security', 'cleaning', 'other'], 
 };
@@ -329,6 +329,8 @@ function assignEmployeeToZone(employeeId, targetZoneId) {
 // add mini card in zoone
 function renderAssignedStaff() {
     const zones = document.querySelectorAll('.zone-area');
+
+    const safeRooms = ['conference', 'staff-room'];
 
     zones.forEach(zone => {
         const zoneId = zone.dataset.zone;
