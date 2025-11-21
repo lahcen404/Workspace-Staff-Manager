@@ -1,3 +1,23 @@
+const zoneNameMap = {
+    'conference': 'Conference Room',
+    'reception': 'Reception Room',
+    'staff-room': 'Staff Room',
+    'archive': 'Archive Room',
+    'security': 'Security Room',
+    'server': 'Server Room',
+    'Unassigned': 'Unassigned'
+};
+
+const ACCESS_RULES = {
+    'reception': ['receptionist'],
+    'server': ['it-tech'],
+    'security': ['security'],
+    'archive': ['receptionist', 'it-tech', 'security', 'manager', 'other'], 
+    'conference': ['receptionist', 'it-tech', 'manager', 'security', 'cleaning', 'other'], 
+    'staff-room': ['receptionist', 'it-tech', 'manager', 'security', 'cleaning', 'other'], 
+};
+
+
 const addModal = document.getElementById("add-employee-modal");
 const addNewWorker = document.getElementById("open-modal-btn");
 const closeModalBtn = document.getElementById("close-modal-btn");
@@ -158,6 +178,7 @@ employeeForm.addEventListener("submit", (e) => {
     id: nextEmployeId++,
     ...newEmployee,
     location: "Unassigned",
+    assignmentHistory: [],
   });
   displayUnassignedStaff();
 
@@ -191,19 +212,21 @@ function displayUnassignedStaff() {
 
 
 // -------------
+// card of assignable workers in assign to
 function createAssignableStaffCard(employee, targetZoneId) {
     const card = document.createElement('div');
     card.className = 'p-3 bg-white rounded-md shadow-sm border border-gray-200 cursor-pointer hover:bg-blue-50 transition duration-100';
     card.innerHTML = `
         <div class="flex items-center space-x-3">
-            <img src="${employee.photoUrl}" alt="${employee.name}" class="w-8 h-8 rounded-full object-cover flex-shrink-0">
+            <img src="${employee.photoUrl}"  class="w-8 h-8 rounded-full object-cover flex-shrink-0">
             <span class="font-medium text-gray-800">${employee.name}</span>
             <span class="text-sm text-gray-500">(${employee.role})</span>
         </div>
     `;
 
     card.addEventListener('click', () => {
-        alert(`Selected ${employee.name} for assignment to ${targetZoneId}`);
+        // alert(`Selected ${employee.name} for assignment to ${targetZoneId}`);
+        assignEmployeeToZone(employee.id, targetZoneId);
         unassignedStaffModal.classList.add('hidden'); 
     });
 
@@ -211,20 +234,99 @@ function createAssignableStaffCard(employee, targetZoneId) {
 }
 
 
+
+
+
 function renderAssignableStaff(targetZoneId) {
     assignableStaffList.innerHTML = '';
     
-    const unassignedEmployees = employees.filter((e) => e.location === "Unassigned");
+    const allowedRoles = ACCESS_RULES[targetZoneId]; 
+
+    //  be Unassigned annd have allowed role
+    const eligibleEmployees = employees.filter((e) => {
+        return e.location === "Unassigned" && allowedRoles.includes(e.role);
+    });
     
-    if (unassignedEmployees.length === 0) {
-        assignableStaffList.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">No unassigned staff available.</p>`;
+    if (eligibleEmployees.length === 0) {
+        assignableStaffList.innerHTML = `<p class="text-sm text-red-500 text-center py-4">No staff with permission available herre</p>`;
         return;
     }
 
-    unassignedEmployees.forEach((employee) => {
+    eligibleEmployees.forEach((employee) => {
+        // card knows where to send ( targeetetZone)
         const card = createAssignableStaffCard(employee, targetZoneId);
         assignableStaffList.appendChild(card);
     });
+}
+// assign employee to zone
+function assignEmployeeToZone(employeeId, targetZoneId) {
+    const employee = employees.find(e => e.id === employeeId);
+    
+    if (employee) {
+
+        employee.location = targetZoneId;
+        
+        saveEmployees();
+        
+        
+        displayUnassignedStaff(); 
+        renderAssignedStaff();    // shoow in room
+        
+        unassignedStaffModal.classList.add('hidden');
+    }
+}
+
+// add mini card in zoone
+function renderAssignedStaff() {
+    const zones = document.querySelectorAll('.zone-area');
+
+    zones.forEach(zone => {
+        const zoneId = zone.dataset.zone;
+
+        const existingCards = zone.querySelectorAll('.assigned-mini-card');
+        existingCards.forEach(c => c.remove());
+
+        const staffInZone = employees.filter(e => e.location === zoneId);
+
+        staffInZone.forEach(emp => {
+            const miniCard = document.createElement('div');
+            
+            miniCard.className = 'assigned-mini-card bg-[#fef3c7] border border-yellow-200 text-gray-800 text-xs px-2 py-1 rounded-full mt-1 w-max shadow-sm flex items-center justify-between space-x-2 cursor-default';
+            
+            miniCard.innerHTML = `
+                <div class="flex items-center space-x-1">
+                    <img class="w-5 h-5" src="${emp.photoUrl}"></img>
+                    <span class="font-bold truncate">${emp.name}</span>
+                </div>
+                <button class="remove-from-zone-btn text-red-500 hover:text-red-600 flex items-center" title="Remove from zone">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+            `;
+
+        
+            const removeBtn = miniCard.querySelector('.remove-from-zone-btn');
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                removeEmployeeFromZone(emp.id);
+            });
+            
+            zone.appendChild(miniCard);
+        });
+    });
+}
+
+function removeEmployeeFromZone(employeeId) {
+    const employee = employees.find(e => e.id === employeeId);
+    if (employee) {
+       
+        employee.location = "Unassigned";
+        
+        
+        saveEmployees();
+        
+        renderAssignedStaff();    
+        displayUnassignedStaff(); 
+    }
 }
 // --------------
 
@@ -309,6 +411,7 @@ document.addEventListener("DOMContentLoaded", () => {
   getEmployees();
   experiencesContainer.appendChild(createExperienceGroup());
   displayUnassignedStaff();
+  renderAssignedStaff();
 });
 
 
