@@ -148,10 +148,35 @@ function validationForm() {
     isValid = false;
   }
 
+  // validatiion Experience Dates
+
+const startDate = document.querySelectorAll('input[name="experience_start-date[]"]')
+const endDate = document.querySelectorAll('input[name="experience_end-date[]"]')
+
+for(let i=0; i<startDate.length;i++){
+
+    const start = startDate[i].value
+    const end = endDate[i].value
+
+    console.log(start)
+    console.log(end)
+
+
+    if(start && end){
+        if (new Date(start) > new Date(end)){
+            alert("start date can't be afteer end date !!!")
+            return false ; // stoop form
+        }
+    }
+}
+
   return isValid;
 }
 
+
+
 // Empoyee Form Submit
+
 
 employeeForm.addEventListener("submit", (e) => {
   e.preventDefault();
