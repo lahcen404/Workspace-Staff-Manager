@@ -1,19 +1,46 @@
-const addModal = document.getElementById("add-employee-modal")
-const addNewWorker = document.getElementById("open-modal-btn")
-const closeModalBtn = document.getElementById('close-modal-btn');
+const zoneNameMap = {
+    'conference': 'Conference Room',
+    'reception': 'Reception Room',
+    'staff-room': 'Staff Room',
+    'archive': 'Archive Room',
+    'security': 'Security Room',
+    'server': 'Server Room',
+    'Unassigned': 'Unassigned'
+};
 
-const profileModal = document.getElementById("profile-modal")
+const ACCESS_RULES = {
+    'reception': ['receptionist'],
+    'server': ['it-tech'],
+    'security': ['security'],
+    'archive': ['receptionist', 'it-tech', 'security', 'manager', 'other'], 
+    'conference': ['receptionist', 'it-tech', 'manager', 'security', 'cleaning', 'other'], 
+    'staff-room': ['receptionist', 'it-tech', 'manager', 'security', 'cleaning', 'other'], 
+};
 
-const addExperienceBtn = document.getElementById("add-experience-btn")
-const experiencesContainer = document.getElementById("experiences-container")
 
-const nameInput = document.getElementById('name-input');
-const emailInput = document.getElementById('email-input');
-const phoneInput = document.getElementById('phone-input');
-const photoInput = document.getElementById('photo-url-input');
-const photoPreview = document.getElementById('photo-preview')
+const addModal = document.getElementById("add-employee-modal");
+const addNewWorker = document.getElementById("open-modal-btn");
+const closeModalBtn = document.getElementById("close-modal-btn");
 
-const unassignedStaffList = document.getElementById("unassigned-staff-list")
+
+const profileModal = document.getElementById("profile-modal");
+const closeProfileModal = document.getElementById("close-profile-btn");
+
+const addExperienceBtn = document.getElementById("add-experience-btn");
+const experiencesContainer = document.getElementById("experiences-container");
+
+const addEmployeeZone = document.querySelectorAll(".add-employee-zone-btn");
+const assignableStaffList = document.getElementById('assignable-staff-list');
+const closeStaffListBtn = document.getElementById('close-staff-list-btn');
+
+const nameInput = document.getElementById("name-input");
+const emailInput = document.getElementById("email-input");
+const phoneInput = document.getElementById("phone-input");
+const photoInput = document.getElementById("photo-url-input");
+const photoPreview = document.getElementById("photo-preview");
+
+const unassignedStaffList = document.getElementById("unassigned-staff-list");
+const unassignedStaffModal = document.getElementById('unassigned-staff-modal');
 
 
 const employeeForm = document.getElementById("employee-form");
@@ -23,54 +50,52 @@ const NAME_REGEX = /^[A-Za-z\s\-']+$/;
 const EMAIL_REGEX = /^[\w\.\-]+@[\w\.\-]+\.\w{2,4}$/;
 const PHONE_REGEX = /^[0-9\s\-+]{1,12}$/;
 
-
 // Employess data
 
 let employees = [];
-let nextEmployeId = 1; 
+let nextEmployeId = 1;
 
 // localStorage
-function saveEmployees(){
-    try{
-        const data = JSON.stringify({employees,nextEmployeId})
-        localStorage.setItem("EmployeesData",data);
-    }catch(error){
-        console.error("error in save daaata",error)
-    }
+function saveEmployees() {
+  try {
+    const data = JSON.stringify({ employees, nextEmployeId });
+    localStorage.setItem("EmployeesData", data);
+  } catch (error) {
+    console.error("error in save daaata", error);
+  }
 }
 
-function getEmployees(){
-    try {
-        const data = localStorage.getItem("EmployeesData");
-        if(data){
-            const parsingData = JSON.parse(data);
-            employees = parsingData.employees || [];
-            nextEmployeId = parsingData.nextEmployeId || 1;
-        }
-
-    } catch (error) {
-        console.error("error in getting data",data);
-        
+function getEmployees() {
+  try {
+    const data = localStorage.getItem("EmployeesData");
+    if (data) {
+      const parsingData = JSON.parse(data);
+      employees = parsingData.employees || [];
+      nextEmployeId = parsingData.nextEmployeId || 1;
     }
+  } catch (error) {
+    console.error("error in getting data", data);
+  }
 }
 
+addNewWorker.addEventListener("click", () => {
+  addModal.classList.remove("hidden");
+});
+
+closeModalBtn.addEventListener("click", () => {
+  addModal.classList.add("hidden");
+});
 
 
-addNewWorker.addEventListener('click',()=>{
-        addModal.classList.remove("hidden")
-})
 
-closeModalBtn.addEventListener("click",()=>{
-    addModal.classList.add("hidden")
-})
 
 // dynamic Experiences
 
-function createExperienceGroup(){
-    const div = document.createElement('div');
+function createExperienceGroup() {
+  const div = document.createElement("div");
 
-    div.className="experience-group p-3 border rounded-lg bg-gray-50";
-    div.innerHTML=`
+  div.className = "experience-group p-3 border rounded-lg bg-gray-50";
+  div.innerHTML = `
               <div class="flex justify-end mb-2">
             <button type="button" class="remove-experience-btn text-red-500 hover:text-red-700 text-lg" title="Remove Experience">
                 <i class="fas fa-minus-circle"></i>
@@ -78,145 +103,315 @@ function createExperienceGroup(){
         </div>
         <label for="experience" class="block text-sm font-medium text-gray-700">Title / Company</label>
         <input id="experience" type="text" name="experience_title[]"  placeholder="ur experience heere ..." class="w-full border border-gray-300 rounded-md shadow-sm p-2">
+        <label for="experience-start-date" class="block text-sm font-medium text-gray-700">Start Date</label>
+        <input id="experience-start-date" type="date" name="experience_start-date[]" class="w-full border border-gray-300 rounded-md shadow-sm p-2">
+        <label for="experience-end-date" class="block text-sm font-medium text-gray-700">End Date</label>
+        <input id="experience-end-date" type="date" name="experience_end-date[]" class="w-full border border-gray-300 rounded-md shadow-sm p-2">
     
-    `
-        div.querySelector('.remove-experience-btn').addEventListener('click',()=>{
-           if(experiencesContainer.querySelectorAll('.experience-group').length>1){
-             div.remove();
-           }else{
-            alert("pleasse at least add one experience !!!")
-           }
-        })
+    `;
+  div.querySelector(".remove-experience-btn").addEventListener("click", () => {
+    if (experiencesContainer.querySelectorAll(".experience-group").length > 1) {
+      div.remove();
+    } else {
+      alert("pleasse at least add one experience !!!");
+    }
+  });
 
-        return div;
-};
+  return div;
+}
 
-addExperienceBtn.addEventListener('click',()=>{
-    experiencesContainer.appendChild(createExperienceGroup());
-})
+addExperienceBtn.addEventListener("click", () => {
+  experiencesContainer.appendChild(createExperienceGroup());
+});
 
 // Validatioon
 
-function validationForm(){
-    let isValid = true ;
+function validationForm() {
+  let isValid = true;
 
-    document.querySelectorAll(".error").forEach((er)=>{
-       er.classList.add('hidden')
-    })
+  document.querySelectorAll(".error").forEach((er) => {
+    er.classList.add("hidden");
+  });
 
-     if(!NAME_REGEX.test(nameInput.value)){
-       document.getElementById('name-error').classList.remove('hidden')
-            isValid=false;
-        }
+  if (!NAME_REGEX.test(nameInput.value)) {
+    document.getElementById("name-error").classList.remove("hidden");
+    isValid = false;
+  }
 
-        if(!EMAIL_REGEX.test(emailInput.value)){
-       document.getElementById('email-error').classList.remove('hidden')
-            isValid=false;
-        }
+  if (!EMAIL_REGEX.test(emailInput.value)) {
+    document.getElementById("email-error").classList.remove("hidden");
+    isValid = false;
+  }
 
-        if(!PHONE_REGEX.test(phoneInput.value)){
-       document.getElementById('phone-error').classList.remove('hidden')
-            isValid=false;
-        }
+  if (!PHONE_REGEX.test(phoneInput.value)) {
+    document.getElementById("phone-error").classList.remove("hidden");
+    isValid = false;
+  }
 
-        return isValid;
+  return isValid;
+}
+
+// Empoyee Form Submit
+
+employeeForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  if (!validationForm()) {
+    alert("Pleaaase correct validaaton inpuuts (Name or Email or Phone )");
+    return;
+  }
+
+  const data = new FormData(employeeForm);
+
+  const newEmployee = {
+    name: data.get("name"),
+    role: data.get("role"),
+    photoUrl: data.get("photoUrl") || "./imgs/icons8-user-100.png",
+    email: data.get("email"),
+    phone: data.get("phone"),
+    experienceTitles: data.getAll("experience_title[]"),
+    experienceStartDates: data.getAll("experience_start-date[]"),
+    experienceEndDates: data.getAll("experience_end-date[]"),
+  };
+
+  employees.push({
+    id: nextEmployeId++,
+    ...newEmployee,
+    location: "Unassigned",
+    assignmentHistory: [],
+  });
+  displayUnassignedStaff();
+
+  saveEmployees();
+  console.log("employe added success");
+
+  employeeForm.reset();
+  addModal.classList.add("hidden");
+  experiencesContainer.innerHTML = "";
+  experiencesContainer.appendChild(createExperienceGroup());
+});
+
+// preview picture
+photoInput.addEventListener("input", (e) => {
+  const url = e.target.value;
+  console.log(url);
+
+  photoPreview.innerHTML = url
+    ? `<img src="${url}"  class="w-full h-full object-cover">`
+    : `<img src="./imgs/icons8-user-100.png"  class="w-full h-full object-cover">`;
+});
+
+//displaying unassigned Staff
+function displayUnassignedStaff() {
+  unassignedStaffList.innerHTML = "";
+  const unassignedEmpls = employees.filter((e) => e.location === "Unassigned");
+  unassignedEmpls.forEach((employe) =>
+    unassignedStaffList.appendChild(createEmployeeCard(employe))
+  );
 }
 
 
-// Empoyee Form Submit 
+// -------------
+// card of assignable workers in assign to
+function createAssignableStaffCard(employee, targetZoneId) {
+    const card = document.createElement('div');
+    card.className = 'p-3 bg-white rounded-md shadow-sm border border-gray-200 cursor-pointer hover:bg-blue-50 transition duration-100';
+    card.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <img src="${employee.photoUrl}"  class="w-8 h-8 rounded-full object-cover flex-shrink-0">
+            <span class="font-medium text-gray-800">${employee.name}</span>
+            <span class="text-sm text-gray-500">(${employee.role})</span>
+        </div>
+    `;
 
-employeeForm.addEventListener("submit",(e)=>{
-    e.preventDefault();
+    card.addEventListener('click', () => {
+        // alert(`Selected ${employee.name} for assignment to ${targetZoneId}`);
+        assignEmployeeToZone(employee.id, targetZoneId);
+        unassignedStaffModal.classList.add('hidden'); 
+    });
 
-    if(!validationForm()){
-        alert("Pleaaase correct validaaton inpuuts (Name or Email or Phone )")
+    return card;
+}
+
+
+
+
+
+function renderAssignableStaff(targetZoneId) {
+    assignableStaffList.innerHTML = '';
+    
+    const allowedRoles = ACCESS_RULES[targetZoneId]; 
+
+    //  be Unassigned annd have allowed role
+    const eligibleEmployees = employees.filter((e) => {
+        return e.location === "Unassigned" && allowedRoles.includes(e.role);
+    });
+    
+    if (eligibleEmployees.length === 0) {
+        assignableStaffList.innerHTML = `<p class="text-sm text-red-500 text-center py-4">No staff with permission available herre</p>`;
         return;
     }
 
-    const data = new FormData(employeeForm);
+    eligibleEmployees.forEach((employee) => {
+        // card knows where to send ( targeetetZone)
+        const card = createAssignableStaffCard(employee, targetZoneId);
+        assignableStaffList.appendChild(card);
+    });
+}
+// assign employee to zone
+function assignEmployeeToZone(employeeId, targetZoneId) {
+    const employee = employees.find(e => e.id === employeeId);
+    
+    if (employee) {
 
-    const newEmployee= {
-        name: data.get('name'),
-        role: data.get('role'),
-        photoUrl:data.get('photoUrl') || './imgs/icons8-user-100.png',
-        email:data.get('email'),
-        phone:data.get('phone'),
-        experience:data.getAll('experience_title[]').filter((t)=> {return t} ).map((title)=> {
-            return { title: title};
-        })
+        employee.location = targetZoneId;
+        
+        saveEmployees();
+        
+        
+        displayUnassignedStaff(); 
+        renderAssignedStaff();    // shoow in room
+        
+        unassignedStaffModal.classList.add('hidden');
     }
+}
 
-    employees.push({
-        id:nextEmployeId++,
-        ...newEmployee,
-        location: 'Unassigned'
-    })
-    displayUnassignedStaff();
+// add mini card in zoone
+function renderAssignedStaff() {
+    const zones = document.querySelectorAll('.zone-area');
 
-    saveEmployees();
-    console.log("employe added success");
-    
-    employeeForm.reset();
-    addModal.classList.add('hidden');
-    experiencesContainer.innerHTML='';
-    experiencesContainer.appendChild(createExperienceGroup());
-})
+    zones.forEach(zone => {
+        const zoneId = zone.dataset.zone;
 
-// preview picture
-photoInput.addEventListener("input",(e)=>{
-    const url = e.target.value;
-    console.log(url);
-    
-    photoPreview.innerHTML= url ? `<img src="${url}"  class="w-full h-full object-cover">` : `<img src="./imgs/icons8-user-100.png"  class="w-full h-full object-cover">`;
-})
+        const existingCards = zone.querySelectorAll('.assigned-mini-card');
+        existingCards.forEach(c => c.remove());
 
+        const staffInZone = employees.filter(e => e.location === zoneId);
 
-//displaying unassigned Staff
-function displayUnassignedStaff(){
+        staffInZone.forEach(emp => {
+            const miniCard = document.createElement('div');
+            
+            miniCard.className = 'assigned-mini-card bg-[#fef3c7] border border-yellow-200 text-gray-800 text-xs px-2 py-1 rounded-full mt-1 w-max shadow-sm flex items-center justify-between space-x-2 cursor-default';
+            
+            miniCard.innerHTML = `
+                <div class="flex items-center space-x-1">
+                    <img class="w-5 h-5" src="${emp.photoUrl}"></img>
+                    <span class="font-bold truncate">${emp.name}</span>
+                </div>
+                <button class="remove-from-zone-btn text-red-500 hover:text-red-600 flex items-center" title="Remove from zone">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+            `;
 
-    unassignedStaffList.innerHTML='';
-const unassignedEmpls = employees.filter((e)=> e.location === "Unassigned");
-unassignedEmpls.forEach((employe)=> unassignedStaffList.appendChild(createEmployeeCard(employe))
+        
+            const removeBtn = miniCard.querySelector('.remove-from-zone-btn');
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                removeEmployeeFromZone(emp.id);
+            });
+            
+            zone.appendChild(miniCard);
+        });
+    });
+}
 
-)}
+function removeEmployeeFromZone(employeeId) {
+    const employee = employees.find(e => e.id === employeeId);
+    if (employee) {
+       
+        employee.location = "Unassigned";
+        
+        
+        saveEmployees();
+        
+        renderAssignedStaff();    
+        displayUnassignedStaff(); 
+    }
+}
+// --------------
 
 // create employe card
-function createEmployeeCard(employe){
-    const card = document.createElement('div');
-     card.className = 'employee-card p-3 mt-1 bg-white rounded-md shadow-sm border border-gray-200 cursor-pointer hover:bg-yellow-50 transition duration-100';
-        card.innerHTML = `
+function createEmployeeCard(employe) {
+  const card = document.createElement("div");
+  card.className =
+    "employee-card p-3 mt-1 bg-white rounded-md shadow-sm border border-gray-200 cursor-pointer hover:bg-yellow-50 transition duration-100";
+  card.innerHTML = `
             <div class="flex items-center space-x-3">
                 <img src="${employe.photoUrl}" alt="${employe.name}" class="w-8 h-8 rounded-full object-cover flex-shrink-0">
                 <span class="font-medium text-gray-800 truncate">${employe.name}</span>
                 <span class="text-sm text-gray-500">(${employe.role})</span>
             </div>
         `;
-        return card;
-}
 
-// display profile card 
+  card.addEventListener("click", () => {
+    displayProfileCard(employe.id);
+  });
 
-function displayProfileCard(id){
-    const employe = employees.find((e)=> e.id === id);
-    if (!employe) return;
-
-    document.getElementById("profile-photo-large").src=employe.photoUrl
-    document.getElementById("profile-name").textContent=employe.name
-    document.getElementById("profile-phone").textContent=employe.phone
-    document.getElementById("profile-role").textContent=employe.role
-    document.getElementById("profile-location").textContent=employe.location == 'Unasssigned'
-    document.getElementById("profile-email").textContent=employe.email
-    document.getElementById("profile-experience-list").innerHTML=employe.experience.map((ex) => { return `<li class="truncate">${ex.title}</li>`; }).join('')
-
-    profileModal.classList.remove("hidden");
-
+  return card;
 }
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    getEmployees();     
-    experiencesContainer.appendChild(createExperienceGroup());
-    displayUnassignedStaff(); 
-    displayProfileCard(7)
+// display profile card
+
+function displayProfileCard(id) {
+  const employe = employees.find((e) => e.id === id);
+  if (!employe) return;
+
+  document.getElementById("profile-photo-large").src = employe.photoUrl;
+  document.getElementById("profile-name").textContent = employe.name;
+  document.getElementById("profile-phone").textContent = employe.phone;
+  document.getElementById("profile-role").textContent = employe.role;
+  document.getElementById("profile-location").textContent =
+    employe.location || "Unasssigned";
+  document.getElementById("profile-email").textContent = employe.email;
+  document.getElementById("profile-experience-list").innerHTML =
+    employe.experienceTitles
+      .map((title, i) => {
+        return `
+                <li class="truncate">
+                    <span class="font-semibold">${title}</span>
+                    <span class="text-xs text-gray-400">
+                        (${employe.experienceStartDates[i]} to ${employe.experienceEndDates[i]})
+                    </span>
+                </li>
+            `;
+      })
+      .join("");
+
+  profileModal.classList.remove("hidden");
+}
+
+
+// display unssigned workers in zones
+addEmployeeZone.forEach((btn)=>{
+    btn.addEventListener('click', (e) => {
+        const zoneElement = e.currentTarget.closest('.zone-area');
+        const targetZoneId = zoneElement.dataset.zone; 
+        
+        renderAssignableStaff(targetZoneId);
+
+        unassignedStaffModal.classList.remove('hidden');
+    });
 });
+
+closeStaffListBtn.addEventListener('click', () => {
+    unassignedStaffModal.classList.add('hidden');
+});
+
+
+// close profile modal
+closeProfileModal.addEventListener("click", () => {
+  profileModal.classList.add("hidden");
+});
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  getEmployees();
+  experiencesContainer.appendChild(createExperienceGroup());
+  displayUnassignedStaff();
+  renderAssignedStaff();
+});
+
+
