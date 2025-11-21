@@ -8,6 +8,15 @@ const zoneNameMap = {
     'Unassigned': 'Unassigned'
 };
 
+const ZONE_CAPACITY = {
+    'conference': 6,
+    'staff-room': 6,
+    'reception': 2,
+    'archive': 2,
+    'security': 2,
+    'server': 2
+};
+
 const ACCESS_RULES = {
     'reception': ['receptionist'],
     'server': ['it-tech'],
@@ -264,8 +273,24 @@ function createAssignableStaffCard(employee, targetZoneId) {
 
 function renderAssignableStaff(targetZoneId) {
     assignableStaffList.innerHTML = '';
+
+
+    const currentPeopleInZone = employees.filter(e => e.location === targetZoneId).length;
     
-    const allowedRoles = ACCESS_RULES[targetZoneId]; 
+    const limit = ZONE_CAPACITY[targetZoneId];
+
+
+// if fulll
+    if (currentPeopleInZone >= limit) {
+        assignableStaffList.innerHTML = `
+            <div class="text-center py-8">
+                <p class="text-red-600 font-bold">Zone is Full!!!</p>
+            </div>
+        `;
+        return; 
+    }
+
+const allowedRoles = ACCESS_RULES[targetZoneId]; 
 
     //  be Unassigned annd have allowed role
     const eligibleEmployees = employees.filter((e) => {
@@ -316,7 +341,7 @@ function renderAssignedStaff() {
         staffInZone.forEach(emp => {
             const miniCard = document.createElement('div');
             
-            miniCard.className = 'assigned-mini-card bg-[#fef3c7] border border-yellow-200 text-gray-800 text-xs px-2 py-1 rounded-full mt-1 w-max shadow-sm flex items-center justify-between space-x-2 cursor-default';
+            miniCard.className = 'assigned-mini-card bg-[#fef3c7] border border-yellow-200 text-gray-800 text-xs px-2 py-1 rounded-full mt-1 w-max shadow-sm flex items-center justify-between space-x-2 wrap';
             
             miniCard.innerHTML = `
                 <div class="flex items-center space-x-1">
