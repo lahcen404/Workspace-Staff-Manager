@@ -412,12 +412,25 @@ function createEmployeeCard(employe) {
                 <img src="${employe.photoUrl}" alt="${employe.name}" class="w-8 h-8 rounded-full object-cover flex-shrink-0">
                 <span class="font-medium text-gray-800 truncate">${employe.name}</span>
                 <span class="text-sm text-gray-500">(${employe.role})</span>
+                <button class="delete-worker text-red-500 hover:text-red-700 flex items-center" title="delete workeer">
+                    <i class="fas fa-times-circle"></i>
+                </button>
             </div>
         `;
 
   card.addEventListener("click", () => {
     displayProfileCard(employe.id);
   });
+
+
+  // delete worker 
+  card.querySelector(".delete-worker").addEventListener("click",(e)=>{
+    e.stopPropagation()
+    if(confirm(`Are you suure you want to delete  ${employe.name}!!`))
+       employees = employees.filter((e)=> e.id !== employe.id)
+       saveEmployees()
+       displayUnassignedStaff()
+  })
 
   return card;
 }
