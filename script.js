@@ -1,12 +1,3 @@
-const zoneNameMap = {
-    'conference': 'Conference Room',
-    'reception': 'Reception Room',
-    'staff-room': 'Staff Room',
-    'archive': 'Archive Room',
-    'security': 'Security Room',
-    'server': 'Server Room',
-    'Unassigned': 'Unassigned'
-};
 
 const ZONE_CAPACITY = {
     'conference': 6,
@@ -386,7 +377,13 @@ const requiredZones = ['reception', 'security', 'server', 'archive'];
             } else {
                 zone.appendChild(miniCard);
             }
+             miniCard.addEventListener("click",()=>{
+            displayProfileCard(emp.id)
+        })
+
         });
+
+       
     });
 }
 
