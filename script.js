@@ -212,7 +212,6 @@ employeeForm.addEventListener("submit", (e) => {
     id: nextEmployeId++,
     ...newEmployee,
     location: "Unassigned",
-    assignmentHistory: [],
   });
   displayUnassignedStaff();
 
@@ -270,7 +269,7 @@ function createAssignableStaffCard(employee, targetZoneId) {
 
 
 
-
+// fiiilter and display unassigned staff  allowed in this zone wiith checkiiing capacity & role
 function renderAssignableStaff(targetZoneId) {
     assignableStaffList.innerHTML = '';
 
@@ -308,6 +307,7 @@ const allowedRoles = ACCESS_RULES[targetZoneId];
         assignableStaffList.appendChild(card);
     });
 }
+
 // assign employee to zone
 function assignEmployeeToZone(employeeId, targetZoneId) {
     const employee = employees.find(e => e.id === employeeId);
@@ -329,28 +329,47 @@ function assignEmployeeToZone(employeeId, targetZoneId) {
 // add mini card in zoone
 function renderAssignedStaff() {
     const zones = document.querySelectorAll('.zone-area');
-
-    const safeRooms = ['conference', 'staff-room'];
+// rooms can't be empty
+const requiredZones = ['reception', 'security', 'server', 'archive'];
 
     zones.forEach(zone => {
         const zoneId = zone.dataset.zone;
+        const addButton = zone.querySelector('.add-employee-zone-btn');
+        const titleSpan = zone.querySelector('span');
 
+        //cleaar old caards
         const existingCards = zone.querySelectorAll('.assigned-mini-card');
         existingCards.forEach(c => c.remove());
 
         const staffInZone = employees.filter(e => e.location === zoneId);
+        const isEmpty = staffInZone.length === 0;
+
+        // colorred it with reed
+        if (isEmpty && requiredZones.includes(zoneId)) {
+            zone.classList.remove('bg-gray-500/50', 'hover:bg-gray-700/50');
+            zone.classList.add('bg-red-500/50', 'border-red-500');
+        } else {
+            zone.classList.add('bg-gray-500/50', 'hover:bg-gray-700/50');
+            zone.classList.remove('bg-red-500/50', 'border-red-500');
+        }
+
+        if (!isEmpty) {
+            zone.classList.replace('flex-col', 'flex-row');
+            zone.classList.add('flex-wrap', 'content-start', 'justify-center', 'overflow-y-auto');
+            if(titleSpan) titleSpan.classList.add('w-full', 'mb-1'); // title in toop of dev
+        } 
 
         staffInZone.forEach(emp => {
             const miniCard = document.createElement('div');
             
-            miniCard.className = 'assigned-mini-card bg-[#fef3c7] border border-yellow-200 text-gray-800 text-xs px-2 py-1 rounded-full mt-1 w-max shadow-sm flex items-center justify-between space-x-2 wrap';
+            miniCard.className = 'assigned-mini-card bg-yellow-100 border border-yellow-300 text-gray-900 text-[6px] md:text-xs font-bold px-0.5 md:px-1.5 rounded shadow-sm flex items-center justify-between gap-0.5 m-0.5 h-3.5 md:h-6 w-auto max-w-[55px] md:max-w-[100px] cursor-pointer ';
             
             miniCard.innerHTML = `
-                <div class="flex items-center space-x-1">
-                    <img class="w-5 h-5" src="${emp.photoUrl}"></img>
-                    <span class="font-bold truncate">${emp.name}</span>
+                <div class="flex items-center gap-0.5 overflow-hidden">
+                    <img class="w-2.5 h-2.5 md:w-3.5 md:h-3.5 rounded-full object-cover border border-white" src="${emp.photoUrl}">
+                    <span class="truncate">${emp.name.split(' ')[0]}</span>
                 </div>
-                <button class="remove-from-zone-btn text-red-500 hover:text-red-600 flex items-center" title="Remove from zone">
+                <button class="remove-from-zone-btn text-red-500 hover:text-red-700 flex items-center" title="Remove">
                     <i class="fas fa-times-circle"></i>
                 </button>
             `;
@@ -362,7 +381,11 @@ function renderAssignedStaff() {
                 removeEmployeeFromZone(emp.id);
             });
             
-            zone.appendChild(miniCard);
+            if (addButton) {
+                zone.insertBefore(miniCard, addButton);
+            } else {
+                zone.appendChild(miniCard);
+            }
         });
     });
 }
