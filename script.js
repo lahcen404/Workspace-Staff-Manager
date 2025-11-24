@@ -48,7 +48,7 @@ const employeeForm = document.getElementById("employee-form");
 // regex validaations
 const NAME_REGEX = /^[A-Za-z\s\-']+$/;
 const EMAIL_REGEX = /^[\w\.\-]+@[\w\.\-]+\.\w{2,4}$/;
-const PHONE_REGEX = /^[0-9\s\-+]{1,12}$/;
+const PHONE_REGEX = /^[0-9\s\-+]{10,12}$/;
 
 // Employess data
 
@@ -96,18 +96,26 @@ function createExperienceGroup() {
 
   div.className = "experience-group p-3 border rounded-lg bg-gray-50";
   div.innerHTML = `
-              <div class="flex justify-end mb-2">
-            <button type="button" class="remove-experience-btn text-red-500 hover:text-red-700 text-lg" title="Remove Experience">
-                <i class="fas fa-minus-circle"></i>
-            </button>
-        </div>
-        <label for="experience" class="block text-sm font-medium text-gray-700">Title / Company</label>
-        <input id="experience" type="text" name="experience_title[]"  placeholder="ur experience heere ..." class="w-full border border-gray-300 rounded-md shadow-sm p-2">
-        <label for="experience-start-date" class="block text-sm font-medium text-gray-700">Start Date</label>
-        <input id="experience-start-date" type="date" name="experience_start-date[]" class="w-full border border-gray-300 rounded-md shadow-sm p-2">
-        <label for="experience-end-date" class="block text-sm font-medium text-gray-700">End Date</label>
-        <input id="experience-end-date" type="date" name="experience_end-date[]" class="w-full border border-gray-300 rounded-md shadow-sm p-2">
-    
+             <div class="flex justify-end mb-1">
+          <button type="button" class="remove-experience-btn text-red-500 hover:text-red-700 text-lg" title="Remove Experience">
+              <i class="fas fa-minus-circle"></i>
+          </button>
+      </div>
+      
+      <label class="block text-sm font-medium text-gray-700">Title / Company</label>
+      <input type="text" name="experience_title[]" placeholder="Ex: Developer at Google" class="w-full border border-gray-300 rounded-md shadow-sm p-2 mb-2">
+      
+      <div class="grid grid-cols-2 gap-2">
+          <div>
+              <label class="block text-sm font-medium text-gray-700">Start Date</label>
+              <input type="date" name="experience_start-date[]" class="date-start w-full border border-gray-300 rounded-md shadow-sm p-2">
+          </div>
+          <div>
+              <label class="block text-sm font-medium text-gray-700">End Date</label>
+              <input type="date" name="experience_end-date[]" class="date-end w-full border border-gray-300 rounded-md shadow-sm p-2">
+          </div>
+      </div>
+      <p class="error text-red-500 text-xs mt-1 hidden " id="date-error">Start date can't be after end date !!</p>
     `;
   div.querySelector(".remove-experience-btn").addEventListener("click", () => {
     if (experiencesContainer.querySelectorAll(".experience-group").length > 1) {
@@ -164,8 +172,10 @@ for(let i=0; i<startDate.length;i++){
 
     if(start && end){
         if (new Date(start) > new Date(end)){
-            alert("start date can't be afteer end date !!!")
-            return false ; // stoop form
+            document.getElementById("date-error").classList.remove('hidden');
+              startInput.classList.add('border-red-500');
+              endInput.classList.add('border-red-500');
+              isValid = false; 
         }
     }
 }
